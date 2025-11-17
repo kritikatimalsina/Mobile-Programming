@@ -1,0 +1,52 @@
+
+/* Animation Section Styles */
+.animation-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.animation-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#animateBtn {
+    display: block;
+    margin: 0 auto 30px;
+    padding: 12px 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#animateBtn:hover {
+    background-color: #45a049;
+}
+
+#animatedBox {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    background-color: #3498db;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    left: 100000000;
+    top: 0;
+}
+
+#animatedText {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
