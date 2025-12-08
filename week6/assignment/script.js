@@ -1,7 +1,10 @@
-// Firebase configuration
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getDatabase, ref, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
 const firebaseConfig = {
     apiKey: "AIzaSyBf8Ipu08jjlmP9cdpzuuk9y-7Y0y3_i_w",
     authDomain: "mobile-programming-f8f0b.firebaseapp.com",
+    databaseURL: "https://mobile-programming-f8f0b-default-rtdb.firebaseio.com",
     projectId: "mobile-programming-f8f0b",
     storageBucket: "mobile-programming-f8f0b.firebasestorage.app",
     messagingSenderId: "841274428594",
@@ -9,65 +12,34 @@ const firebaseConfig = {
     measurementId: "G-W8KHLG0J0C"
 };
 
-// Initialize Firebase
-try {
-    firebase.initializeApp(firebaseConfig);
-    console.log("Firebase initialized successfully");
-} catch (error) {
-    console.error("Firebase initialization error:", error);
-}
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-const db = firebase.firestore();
+const form = document.getElementById('contactForm');
+const status = document.getElementById('status');
 
-// DOM Elements
-const contactForm = document.getElementById('contactForm');
-const submitBtn = document.getElementById('submitBtn');
-const statusMessage = document.getElementById('statusMessage');
+const showStatus = (message, isSuccess) => {
+    status.textContent = message;
+    status.className = isSuccess ? 'success' : 'error';
+    setTimeout(() => status.style.display = 'none', 5000);
+};
 
-// Form Submission Handler
-contactForm.addEventListener('submit', async (e) => {
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // Disable button to prevent double submit
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>Sending...</span>';
-
-    // Get form data
+    
     const formData = {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         message: document.getElementById('message').value,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: new Date().toISOString()
     };
 
     try {
-        // Add a new document with a generated ID
-        await db.collection("contacts").add(formData);
-
-        // Show success message
-        showStatus('Message sent successfully! We will get back to you soon.', 'success');
-
-        // Reset form
-        contactForm.reset();
-
+        await push(ref(db, 'contacts'), formData);
+        showStatus('Message sent successfully!', true);
+        form.reset();
     } catch (error) {
-        console.error("Error adding document: ", error);
-        showStatus('Error sending message. Please try again later.', 'error');
-    } finally {
-        // Re-enable button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Send Message</span>';
+        showStatus('Failed to send message. Please try again.', false);
+        console.error('Error:', error);
     }
 });
-
-// Helper function to show status messages
-function showStatus(message, type) {
-    statusMessage.textContent = message;
-    statusMessage.className = `status-message ${type}`;
-    statusMessage.classList.remove('hidden');
-
-    // Hide after 5 seconds
-    setTimeout(() => {
-        statusMessage.classList.add('hidden');
-    }, 5000);
-}
